@@ -1,0 +1,44 @@
+{
+    "/home/romain/Téléchargements/" : {
+        "toRemove" : ["deb","torrent"],
+        "toMove" : [
+            {"/home/romain/Images" : "jpg"},
+            {"/home/romain/Images" : "jpeg"},
+            {"/home/romain/Images" : "png"},
+            {"/home/romain/Images" : "gif"},
+            {"/home/romain/Vidéos" : "mp4"},
+            {"/home/romain/Vidéos" : "avi"},
+            {"/home/romain/Musiques" : "mp3"},
+            {"/home/romain/Documents" : "pdf"},
+            {"/home/romain/Documents" : "odt"}
+        ],
+        "toKeep" : [
+            {"2 week" : "zip"},
+            {"2 week" : "tar.gz"},
+            {"2 week" : "rar"},
+            {"2 week" : "gz"},
+            {"2 week" : "tar"},
+            {"4 week" : "txt"}
+        ]
+    },
+    "/home/romain/Vidéos/" : {
+        "toRemove" : ["torrent"],
+        "toKeep" : [
+            {"8 week" : "avi"},
+            {"8 week" : "mp4"},
+            {"8 week" : "folder"}
+        ]
+    },
+    "/home/romain/.local/share/Trash/files/" : {
+        "toRemove" : ["torrent","deb","avi","mp4","gif","iso"],
+        "toKeep" : [
+            {"4 week" : "pdf"},
+            {"4 week" : "folder"},
+            {"4 week" : "rar"},
+            {"4 week" : "zip"},
+            {"4 week" : "tar.gz"},
+            {"4 week" : "gz"},
+            {"4 week" : "tar"}
+        ]
+    }
+}
