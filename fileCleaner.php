@@ -8,6 +8,7 @@ foreach( $settings as $folderToClean => $action )
 {
     foreach( scandir( $folderToClean ) as $f )
     {
+        if( $f === "." || $f === ".." ) continue;
         $File = new File( $folderToClean . $f );
 
         // files to remove
@@ -31,9 +32,26 @@ foreach( $settings as $folderToClean => $action )
             {
                 foreach( $toMove as $destination => $ext )
                 {
-                    if( $File->getExtension() === $ext )
+                    if( $File->getExtension() === explode( ".", $ext )[0] )
                     {
-                        move_uploaded_file( $File->getPath(), $destination);
+                        if( $File->getExtension() === "folder" )
+                        {
+                            if( isset( explode( ".", $ext )[1] ) )
+                            {
+                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
+                                {
+                                    rename( $File->getPath(), $destination . "/" . $File->getName() );
+                                }
+                            }
+                            else
+                            {
+                                rename( $File->getPath(), $destination . "/" . $File->getName() );
+                            }
+                        }
+                        else
+                        {
+                            move_uploaded_file( $File->getPath(), $destination);
+                        }
                     }
                 }
             }
@@ -50,6 +68,17 @@ foreach( $settings as $folderToClean => $action )
                     {
                         if( $File->getExtension() === "folder" )
                         {
+                            if( isset( explode( ".", $ext )[1] ) )
+                            {
+                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
+                                {
+                                    removeDir( $File->getPath() );
+                                }
+                            }
+                            else
+                            {
+                                removeDir( $File->getPath() );
+                            }
                             removeDir( $File->getPath() );
                         }
                         else
@@ -79,4 +108,25 @@ function removeDir( $src )
     }
     closedir($dir);
     rmdir($src);
+}
+
+function inFolder( $path, $ext )
+{
+    foreach( scandir( $path ) as $f )
+    {
+        $File = new File( $path . "/" . $f );
+        if( $f === "." || $f === ".." ) continue;
+        if( $File->getExtension() === $ext )
+        {
+            return true;
+        }
+        else if( $File->getExtension() === "folder" )
+        {
+            if( inFolder( $path . "/" . $f, $ext ) )
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }

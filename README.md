@@ -5,7 +5,7 @@ fileCleaner is a short PHP script which will clean your document automaticly.
 
 ## Getting started
 
-Clone the project : 
+Clone the project :
 
 ```
 git clone https://github.com/romdum/fileCleaner.git
@@ -41,7 +41,7 @@ Settings are group in settings.json file, it format is :
 * `toMove` array contain where the file will be move (key) and files extensions to move.
 * `toKeep` array contain the time to keep a file (key) and files extensions to remove.
 
-Here is an example : 
+Here is an example :
 
 ```
 {
@@ -53,6 +53,7 @@ Here is an example :
             {"/home/user/Images" : "png"},
             {"/home/user/Images" : "gif"},
             {"/home/user/Vidéos" : "mp4"},
+            {"/home/user/Vidéos" : "folder.mp4"},
             {"/home/user/Vidéos" : "avi"},
             {"/home/user/Musiques" : "mp3"},
             {"/home/user/Documents" : "pdf"},
@@ -78,9 +79,20 @@ Here is an example :
 }
 
 ```
-------------
+
+You can use `folder` extension to remove, move or keep folders.
+You can use `folder.extension` to move or keep folder containing extension, for example :
+
+```
+"toMove" : [
+    {"/home/user/Vidéos" : "folder.mp4"},
+]
+```
+
+That setting will move folders containing mp4 files in "/home/user/Vidéos" directory.
+
+------
 
 ## Tips and Tricks
 
 The time to keep is use with the [strtotime](http://php.net/manual/en/function.strtotime.php) PHP function, you can refer to it to personnalize this value.
-

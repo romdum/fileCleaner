@@ -8,7 +8,10 @@
             {"/home/romain/Images" : "gif"},
             {"/home/romain/Vidéos" : "mp4"},
             {"/home/romain/Vidéos" : "avi"},
+            {"/home/romain/Vidéos" : "folder.avi"},
+            {"/home/romain/Vidéos" : "folder.mp4"},
             {"/home/romain/Musiques" : "mp3"},
+            {"/home/romain/Musiques" : "folder.mp3"},
             {"/home/romain/Documents" : "pdf"},
             {"/home/romain/Documents" : "odt"}
         ],

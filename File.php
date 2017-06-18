@@ -30,4 +30,9 @@ class File
     {
         return $this->path;
     }
+
+    public function getName()
+    {
+        return basename( $this->path );
+    }
 }
