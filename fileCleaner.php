@@ -7,9 +7,8 @@ if( is_null( $settings ) ) die("JSON file contain errors.\n");
 
 foreach( $settings as $folderToClean => $action )
 {
-    foreach( scandir( $folderToClean ) as $f )
+    foreach( array_diff( scandir( $folderToClean ), [".",".."] ) as $f )
     {
-        if( $f === "." || $f === ".." ) continue;
         $File = new File( $folderToClean . $f );
 
         // files to remove
@@ -94,35 +93,33 @@ foreach( $settings as $folderToClean => $action )
 
 function removeDir( $src )
 {
-    $dir = opendir($src);
-    while(false !== ( $file = readdir($dir)) ) {
-        if (( $file != '.' ) && ( $file != '..' )) {
-            $full = $src . '/' . $file;
-            if ( is_dir($full) ) {
-                removeDir($full);
-            }
-            else {
-                unlink($full);
-            }
+    foreach( array_diff( scandir( $src ), [".",".."] ) as $file )
+    {
+        if( is_dir( $src . "/" . $file ) )
+        {
+            removeDir( $src . "/" . $file);
+        }
+        else
+        {
+            unlink( $src . "/" . $file );
         }
     }
-    closedir($dir);
     rmdir($src);
 }
 
 function inFolder( $path, $ext )
 {
-    foreach( scandir( $path ) as $f )
+    foreach( array_diff( scandir( $path ), [".",".."] ) as $f )
     {
         $File = new File( $path . "/" . $f );
-        if( $f === "." || $f === ".." ) continue;
+
         if( $File->getExtension() === $ext )
         {
             return true;
         }
         else if( $File->getExtension() === "folder" )
         {
-            if( inFolder( $path . "/" . $f, $ext ) )
+            if( inFolder( $File->getPath(), $ext ) )
             {
                 return true;
             }
