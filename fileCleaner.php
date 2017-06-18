@@ -80,7 +80,6 @@ foreach( $settings as $folderToClean => $action )
                             {
                                 removeDir( $File->getPath() );
                             }
-                            removeDir( $File->getPath() );
                         }
                         else
                         {
