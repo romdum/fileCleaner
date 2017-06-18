@@ -3,6 +3,7 @@
 require_once "/home/romain/Documents/dev/fileCleaner/File.php";
 
 $settings = json_decode( file_get_contents( "/home/romain/Documents/dev/fileCleaner/settings.json" ), true );
+if( is_null( $settings ) ) die("JSON file contain errors.\n");
 
 foreach( $settings as $folderToClean => $action )
 {
