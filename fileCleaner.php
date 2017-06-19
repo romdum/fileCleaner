@@ -24,7 +24,6 @@ foreach( $settings as $folderToClean => $action )
             {
                 unlink( $File->getPath() );
             }
-            continue;
         }
 
         // files to move
@@ -52,7 +51,41 @@ foreach( $settings as $folderToClean => $action )
                         }
                         else
                         {
-                            move_uploaded_file( $File->getPath(), $destination);
+                            rename( $File->getPath(), $destination . "/" . $File->getName() );
+                        }
+                    }
+                }
+            }
+        }
+
+        if( isset( $action["toCopy"] ) )
+        {
+            foreach( $action["toCopy"] as $toCopy )
+            {
+                foreach( $toCopy as $destination => $ext )
+                {
+                    if( $File->getExtension() === explode( ".", $ext )[0] )
+                    {
+                        if( $File->getExtension() === "folder" )
+                        {
+                            if( isset( explode( ".", $ext )[1] ) )
+                            {
+                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
+                                {
+                                    if( is_dir( $destination . "/" . $File->getName() ) ) continue;
+                                    copy( $File->getPath(), $destination ."/". $File->getName() );
+                                }
+                            }
+                            else
+                            {
+                                if( is_dir( $destination . "/" . $File->getName() ) ) continue;
+                                copy( $File->getPath(), $destination ."/". $File->getName() );
+                            }
+                        }
+                        else
+                        {
+                            if( is_file( $destination . "/" . $File->getName() ) ) continue;
+                            copy( $File->getPath(), $destination ."/". $File->getName() );
                         }
                     }
                 }

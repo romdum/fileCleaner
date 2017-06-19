@@ -40,6 +40,9 @@ Settings are group in settings.json file, it format is :
 * `toRemove` array contain files extensions which will be remove.
 * `toMove` array contain where the file will be move (key) and files extensions to move.
 * `toKeep` array contain the time to keep a file (key) and files extensions to remove.
+* `toCopy` array contain where the file will be copy (key) and files extensions to copy.
+
+**Warning** when ou use to copy if the file already exist in destination folder, copy will not be done.
 
 Here is an example :
 
@@ -74,6 +77,9 @@ Here is an example :
             {"8 week" : "avi"},
             {"8 week" : "mp4"},
             {"8 week" : "folder"}
+        ],
+        "toCopy" : [
+            {"/home/user/Bureau" : "txt"}
         ]
     }
 }
