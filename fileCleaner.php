@@ -1,8 +1,10 @@
 <?php
 
-require_once "/home/romain/Documents/dev/fileCleaner/File.php";
+$CURRENT_DIR = pathinfo($argv[0], PATHINFO_DIRNAME);
 
-$settings = json_decode( file_get_contents( "/home/romain/Documents/dev/fileCleaner/settings.json" ), true );
+require_once $CURRENT_DIR ."/File.php";
+
+$settings = json_decode( file_get_contents( $CURRENT_DIR . "/settings.json" ), true );
 if( is_null( $settings ) ) die("JSON file contain errors.\n");
 
 foreach( $settings as $folderToClean => $action )
