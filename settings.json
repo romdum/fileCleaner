@@ -1,0 +1,47 @@
+{
+    "/home/user/Téléchargements/" : {
+        "toRemove" : ["deb","torrent"],
+        "toMove" : [
+            {"/home/user/Images" : "jpg"},
+            {"/home/user/Images" : "jpeg"},
+            {"/home/user/Images" : "png"},
+            {"/home/user/Images" : "gif"},
+            {"/home/user/Vidéos" : "mp4"},
+            {"/home/user/Vidéos" : "avi"},
+            {"/home/user/Vidéos" : "folder.avi"},
+            {"/home/user/Vidéos" : "folder.mp4"},
+            {"/home/user/Musiques" : "mp3"},
+            {"/home/user/Musiques" : "folder.mp3"},
+            {"/home/user/Documents" : "pdf"},
+            {"/home/user/Documents" : "odt"}
+        ],
+        "toKeep" : [
+            {"2 week" : "zip"},
+            {"2 week" : "tar.gz"},
+            {"2 week" : "rar"},
+            {"2 week" : "gz"},
+            {"2 week" : "tar"},
+            {"4 week" : "txt"}
+        ]
+    },
+    "/home/user/Vidéos/" : {
+        "toRemove" : ["torrent"],
+        "toKeep" : [
+            {"8 week" : "avi"},
+            {"8 week" : "mp4"},
+            {"8 week" : "folder"}
+        ]
+    },
+    "/home/user/.local/share/Trash/files/" : {
+        "toRemove" : ["torrent","deb","avi","mp4","gif","iso"],
+        "toKeep" : [
+            {"4 week" : "pdf"},
+            {"4 week" : "folder"},
+            {"4 week" : "rar"},
+            {"4 week" : "zip"},
+            {"4 week" : "tar.gz"},
+            {"4 week" : "gz"},
+            {"4 week" : "tar"}
+        ]
+    }
+}
