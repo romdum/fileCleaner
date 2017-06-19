@@ -96,3 +96,5 @@ That setting will move folders containing mp4 files in "/home/user/Vidéos" dire
 ## Tips and Tricks
 
 The time to keep is use with the [strtotime](http://php.net/manual/en/function.strtotime.php) PHP function, you can refer to it to personnalize this value.
+
+Use [crontab](https://help.ubuntu.com/community/CronHowto) to execute automaticly the script.
