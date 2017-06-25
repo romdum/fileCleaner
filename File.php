@@ -2,6 +2,7 @@
 
 class File
 {
+    const FOLDER_EXTENSION = "folder";
     private $path;
 
     public function __construct( $path )
@@ -13,7 +14,7 @@ class File
     {
         if( is_dir( $this->path ) )
         {
-            return "folder";
+            return self::FOLDER_EXTENSION;
         }
         else
         {

@@ -1,10 +1,11 @@
 <?php
 
-$CURRENT_DIR = pathinfo($argv[0], PATHINFO_DIRNAME);
+define( "CURRENT_DIR", pathinfo( $argv[0], PATHINFO_DIRNAME ) );
+define( "SLASH", strtr( CURRENT_DIR, ["/"] ) === false ? "\\" : "/" );
 
-require_once $CURRENT_DIR ."/File.php";
+require_once CURRENT_DIR . SLASH . "File.php";
 
-$settings = json_decode( file_get_contents( $CURRENT_DIR . "/settings.json" ), true );
+$settings = json_decode( file_get_contents( CURRENT_DIR . SLASH . "settings.json" ), true );
 if( is_null( $settings ) ) die("JSON file contain errors.\n");
 
 foreach( $settings as $folderToClean => $action )
@@ -16,109 +17,61 @@ foreach( $settings as $folderToClean => $action )
         // files to remove
         if( isset( $action["toRemove"] ) && in_array( $File->getExtension(), $action["toRemove"] ) )
         {
-            if( $File->getExtension() === "folder" )
+            if( $File->getExtension() === File::FOLDER_EXTENSION )
             {
-                removeDir( $File->getPath() );
+                if( isset( explode( ".", $ext )[1] ) )
+                {
+                    if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
+                    {
+                        remove( $File->getPath() );
+                    }
+                }
+                else
+                {
+                    remove( $File->getPath() );
+                }
             }
             else
             {
-                unlink( $File->getPath() );
+                remove( $File->getPath() );
             }
         }
 
-        // files to move
-        if( isset( $action["toMove"] ) )
+
+        clean( $action, "toCopy", $File );
+        clean( $action, "toMove", $File );
+        clean( $action, "toKeep", $File );
+
+    }
+}
+
+function clean( $actions, $keyAction, $File )
+{
+    if( isset( $actions[$keyAction] ) )
+    {
+        foreach( $actions[$keyAction] as $action )
         {
-            foreach( $action["toMove"] as $toMove )
+            foreach( $action as $key => $ext )
             {
-                foreach( $toMove as $destination => $ext )
+                if( $File->getExtension() === explode( ".", $ext )[0] )
                 {
-                    if( $File->getExtension() === explode( ".", $ext )[0] )
+                    if( $File->getExtension() === File::FOLDER_EXTENSION )
                     {
-                        if( $File->getExtension() === "folder" )
+                        if( isset( explode( ".", $ext )[1] ) )
                         {
-                            if( isset( explode( ".", $ext )[1] ) )
+                            if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
                             {
-                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
-                                {
-                                    rename( $File->getPath(), $destination . "/" . $File->getName() );
-                                }
-                            }
-                            else
-                            {
-                                rename( $File->getPath(), $destination . "/" . $File->getName() );
+                                cleanAction( $keyAction, $File, $key );
                             }
                         }
                         else
                         {
-                            rename( $File->getPath(), $destination . "/" . $File->getName() );
+                            cleanAction( $keyAction, $File, $key );
                         }
                     }
-                }
-            }
-        }
-
-        if( isset( $action["toCopy"] ) )
-        {
-            foreach( $action["toCopy"] as $toCopy )
-            {
-                foreach( $toCopy as $destination => $ext )
-                {
-                    if( $File->getExtension() === explode( ".", $ext )[0] )
+                    else
                     {
-                        if( $File->getExtension() === "folder" )
-                        {
-                            if( isset( explode( ".", $ext )[1] ) )
-                            {
-                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
-                                {
-                                    if( is_dir( $destination . "/" . $File->getName() ) ) continue;
-                                    copy( $File->getPath(), $destination ."/". $File->getName() );
-                                }
-                            }
-                            else
-                            {
-                                if( is_dir( $destination . "/" . $File->getName() ) ) continue;
-                                copy( $File->getPath(), $destination ."/". $File->getName() );
-                            }
-                        }
-                        else
-                        {
-                            if( is_file( $destination . "/" . $File->getName() ) ) continue;
-                            copy( $File->getPath(), $destination ."/". $File->getName() );
-                        }
-                    }
-                }
-            }
-        }
-
-        // files to keep temporaly
-        if( isset( $action["toKeep"] ) )
-        {
-            foreach( $action["toKeep"] as $toKeep )
-            {
-                foreach( $toKeep as $time => $ext )
-                {
-                    if( $File->getExtension() === $ext && $File->getCreationDate() < strtotime( "-".$time ) )
-                    {
-                        if( $File->getExtension() === "folder" )
-                        {
-                            if( isset( explode( ".", $ext )[1] ) )
-                            {
-                                if( inFolder( $File->getPath(), explode( ".", $ext )[1] ) )
-                                {
-                                    removeDir( $File->getPath() );
-                                }
-                            }
-                            else
-                            {
-                                removeDir( $File->getPath() );
-                            }
-                        }
-                        else
-                        {
-                            unlink( $File->getPath() );
-                        }
+                        cleanAction( $keyAction, $File, $key );
                     }
                 }
             }
@@ -126,17 +79,40 @@ foreach( $settings as $folderToClean => $action )
     }
 }
 
-function removeDir( $src )
+function cleanAction( $keyAction, $File, $key)
 {
+    switch( $keyAction )
+    {
+        case "toCopy":
+            if( is_dir( $key . SLASH . $File->getName() ) ) continue;
+            copy( $File->getPath(), $key . SLASH . $File->getName() );
+            break;
+        case "toKeep":
+            if( $File->getCreationDate() < strtotime( "-" . $key ) )
+                remove( $File->getPath() );
+            break;
+        case "toMove":
+            rename( $File->getPath(), $key . SLASH . $File->getName() );
+            break;
+    }
+}
+
+function remove( $src )
+{
+    if( is_file( $src ) )
+    {
+        unlink($src);
+        return;
+    }
     foreach( array_diff( scandir( $src ), [".",".."] ) as $file )
     {
-        if( is_dir( $src . "/" . $file ) )
+        if( is_dir( $src . SLASH . $file ) )
         {
-            removeDir( $src . "/" . $file);
+            removeDir( $src . SLASH . $file);
         }
         else
         {
-            unlink( $src . "/" . $file );
+            unlink( $src . SLASH . $file );
         }
     }
     rmdir($src);
@@ -146,13 +122,13 @@ function inFolder( $path, $ext )
 {
     foreach( array_diff( scandir( $path ), [".",".."] ) as $f )
     {
-        $File = new File( $path . "/" . $f );
+        $File = new File( $path . SLASH . $f );
 
         if( $File->getExtension() === $ext )
         {
             return true;
         }
-        else if( $File->getExtension() === "folder" )
+        else if( $File->getExtension() === File::FOLDER_EXTENSION )
         {
             if( inFolder( $File->getPath(), $ext ) )
             {
