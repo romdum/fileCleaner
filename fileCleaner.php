@@ -37,7 +37,6 @@ foreach( $settings as $folderToClean => $action )
             }
         }
 
-
         clean( $action, "toCopy", $File );
         clean( $action, "toMove", $File );
         clean( $action, "toKeep", $File );
@@ -53,7 +52,7 @@ function clean( $actions, $keyAction, $File )
         {
             foreach( $action as $key => $ext )
             {
-                if( $File->getExtension() === explode( ".", $ext )[0] )
+                if( $File->getExtension() === explode( ".", $ext )[0] || explode( ".", $ext )[0] === '' )
                 {
                     if( $File->getExtension() === File::FOLDER_EXTENSION )
                     {
